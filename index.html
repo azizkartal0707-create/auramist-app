@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>AuraMist Mini App</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
       --bg-dark: #1a0b16;
@@ -44,7 +43,7 @@
     .close-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
 
     /* Coffee Upload Styles */
-    .upload-box { border: 2px dashed var(--accent-pink); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 15px; background: rgba(255, 77, 141, 0.05); }
+    .upload-box { border: 2px dashed var(--accent-pink); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 15px; background: rgba(255, 77, 141, 0.05); cursor: pointer; }
     .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
     .preview-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid var(--accent-pink); }
 
@@ -72,7 +71,7 @@
   <!-- Main Content -->
   <div class="container" id="main-view">
     <div class="banner">
-      <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800" alt="Mystic Banner">
+      <img src="https://unsplash.com" alt="Mystic Banner">
       <div class="banner-text">🔮 Mistik Enerjiler Seni Bekliyor</div>
     </div>
 
@@ -149,146 +148,43 @@
       <span>⭐</span>
       <span>Stars Yükle</span>
     </div>
-    <div class="nav-item" onclick="promptCEO()">
-      <span>👑</span>
-      <span>CEO Girişi</span>
+    <div class="nav-item" onclick="alert('Profil ayarları yakında eklenecek.')">
+      <span>👤</span>
+      <span>Profil</span>
     </div>
   </div>
 
+  <!-- 1. ADIM: TELEGRAM KÜTÜPHANE ÇEKİRDEK KODU (Gönderdiğiniz Orijinal Dosya) -->
   <script>
-    let stars = 60;
-    let selectedCards = [];
-    let uploadedImages = [];
-
-    // Telegram Haptics
-    const tg = window.Telegram?.WebApp;
-    if (tg) tg.expand();
-
-    function triggerHaptic() {
-      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-    }
-
-    function openCoffeeModal() {
-      triggerHaptic();
-      document.getElementById('coffee-modal').classList.add('active');
-    }
-
-    function openTarotModal() {
-      triggerHaptic();
-      document.getElementById('tarot-modal').classList.add('active');
-      initTarotGrid();
-    }
-
-    function closeModals() {
-      triggerHaptic();
-      document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
-    }
-
-    // Image Upload Handling
-    function handleImageUpload(e) {
-      const files = e.target.files;
-      const container = document.getElementById('preview-container');
-      container.innerHTML = '';
-      uploadedImages = [];
-
-      for (let i = 0; i < Math.min(files.length, 2); i++) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          uploadedImages.push(event.target.result);
-          const img = document.createElement('img');
-          img.src = event.target.result;
-          img.className = 'preview-img';
-          container.appendChild(img);
+    (function () {
+      var eventHandlers = {};
+      var locationHash = '';
+      try { locationHash = location.hash.toString(); } catch (e) {}
+      var initParams = urlParseHashParams(locationHash);
+      var storedParams = sessionStorageGet('initParams');
+      if (storedParams) {
+        for (var key in storedParams) {
+          if (typeof initParams[key] === 'undefined') { initParams[key] = storedParams[key]; }
+        }
+      }
+      sessionStorageSet('initParams', initParams);
+      var isIframe = false, iFrameStyle;
+      try {
+        isIframe = (window.parent != null && window != window.parent);
+        if (isIframe) {
+          window.addEventListener('message', function (event) {
+            if (event.source !== window.parent) return;
+            try { var dataParsed = JSON.parse(event.data); } catch (e) { return; }
+            if (!dataParsed || !dataParsed.eventType) { return; }
+            if (dataParsed.eventType == 'set_custom_style') {
+              if (event.origin === 'https://telegram.org') { iFrameStyle.innerHTML = dataParsed.eventData; }
+            } else if (dataParsed.eventType == 'reload_iframe') {
+              try { window.parent.postMessage(JSON.stringify({eventType: 'iframe_will_reload'}), '*'); } catch (e) {}
+              location.reload();
+            } else { receiveEvent(dataParsed.eventType, dataParsed.eventData); }
+          });
+          iFrameStyle = document.createElement('style');
+          document.head.appendChild(iFrameStyle);
           
-          if (uploadedImages.length > 0) {
-            document.getElementById('analyze-btn').style.display = 'block';
-          }
-        };
-        reader.readAsDataURL(files[i]);
-      }
-    }
-
-    function startCoffeeReading() {
-      if (stars < 10) return alert('Yetersiz Yıldız!');
-      triggerHaptic();
-      stars -= 10;
-      document.getElementById('star-count').innerText = stars;
-
-      const btn = document.getElementById('analyze-btn');
-      btn.innerText = 'Fincan Analiz Ediliyor... ✨';
-      btn.disabled = true;
-
-      setTimeout(() => {
-        btn.style.display = 'none';
-        document.getElementById('coffee-result').style.display = 'block';
-        document.getElementById('coffee-text').innerText = 'Fincanınızda yükselen bir kuş figürü ve yol işareti görünüyor. Yakın zamanda bir haber veya beklenmedik bir fırsat kapınızı çalabilir. İçsel enerjiniz oldukça yüksek!';
-      }, 2000);
-    }
-
-    // Tarot Logic
-    function initTarotGrid() {
-      const grid = document.getElementById('tarot-cards');
-      grid.innerHTML = '';
-      selectedCards = [];
-      document.getElementById('tarot-read-btn').style.display = 'none';
-      document.getElementById('tarot-result').style.display = 'none';
-      document.getElementById('tarot-instruction').innerText = 'Enerjini odakla ve 3 kart seç (Seçilen: 0/3)';
-
-      for (let i = 1; i <= 6; i++) {
-        const card = document.createElement('div');
-        card.className = 'tarot-card';
-        card.innerText = '✨';
-        card.onclick = () => selectCard(card, i);
-        grid.appendChild(card);
-      }
-    }
-
-    function selectCard(cardEl, id) {
-      triggerHaptic();
-      if (selectedCards.includes(id)) {
-        selectedCards = selectedCards.filter(c => c !== id);
-        cardEl.classList.remove('selected');
-      } else {
-        if (selectedCards.length >= 3) return;
-        selectedCards.push(id);
-        cardEl.classList.add('selected');
-      }
-
-      document.getElementById('tarot-instruction').innerText = `Enerjini odakla ve 3 kart seç (Seçilen: ${selectedCards.length}/3)`;
-      if (selectedCards.length === 3) {
-        document.getElementById('tarot-read-btn').style.display = 'block';
-      } else {
-        document.getElementById('tarot-read-btn').style.display = 'none';
-      }
-    }
-
-    function startTarotReading() {
-      if (stars < 15) return alert('Yetersiz Yıldız!');
-      triggerHaptic();
-      stars -= 15;
-      document.getElementById('star-count').innerText = stars;
-
-      const btn = document.getElementById('tarot-read-btn');
-      btn.innerText = 'Kartlar Okunuyor... ✨';
-      btn.disabled = true;
-
-      setTimeout(() => {
-        btn.style.display = 'none';
-        document.getElementById('tarot-result').style.display = 'block';
-        document.getElementById('tarot-text').innerText = 'Seçtiğiniz kartlar (Güneş, Kupa Ası ve İmparatoriçe) şans ve bolluk dönemine girdiğinizi gösteriyor. Kararlarınızda sezgilerinize güvenin.';
-      }, 2000);
-    }
-
-    function promptCEO() {
-      const pin = prompt("CEO Giriş Şifresi:");
-      if (pin === "Artom.0202") {
-        alert("Hoş geldiniz Sayın Aziz Kartal. Yönetici Paneli Aktif.");
-      } else if (pin) {
-        alert("Hatalı PIN!");
-      }
-    }
-  </script>
-</body>
-</html>
 
         
