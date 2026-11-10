@@ -1,577 +1,292 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AuraMist - Mystic Readings</title>
-    <!-- Telegram Web App SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            --bg-dark: #1f0b18;
-            --bg-glow: linear-gradient(135deg, #3d1432 0%, #1f0b18 100%);
-            --pink-main: #ff69b4;
-            --pink-light: #ffb6c1;
-            --pink-glow: rgba(255, 105, 180, 0.4);
-            --white-pure: #ffffff;
-            --text-muted: #f3d5e7;
-            --card-bg: rgba(45, 15, 38, 0.85);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>AuraMist Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-dark: #1a0b16;
+      --card-bg: #2a1526;
+      --accent-pink: #ff4d8d;
+      --accent-glow: #ff85b3;
+      --text-gold: #ffd700;
+      --text-light: #fce4ec;
+    }
 
-        body {
-            background: var(--bg-dark);
-            background-image: var(--bg-glow);
-            color: var(--white-pure);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 16px;
-            padding-bottom: 80px;
-            min-height: 100vh;
-            box-sizing: border-box;
-            overflow-x: hidden;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
+    body { background-color: var(--bg-dark); color: var(--text-light); min-height: 100vh; padding-bottom: 70px; display: flex; flex-direction: column; }
+    
+    /* Header */
+    .header { background: var(--card-bg); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #4a1f3d; }
+    .logo { font-size: 22px; font-weight: bold; color: #fff; text-shadow: 0 0 10px var(--accent-pink); }
+    .stars-badge { background: rgba(255, 77, 141, 0.2); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--accent-pink); display: flex; align-items: center; gap: 6px; }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 12px 16px;
-            border-radius: 16px;
-            border: 1px solid var(--pink-glow);
-            backdrop-filter: blur(10px);
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px rgba(255, 105, 180, 0.15);
-        }
+    /* Content Area */
+    .container { padding: 15px; flex: 1; display: flex; flex-direction: column; gap: 15px; }
+    .banner { width: 100%; border-radius: 16px; overflow: hidden; position: relative; border: 1px solid #5a264a; }
+    .banner img { width: 100%; height: 160px; object-fit: cover; display: block; }
+    .banner-text { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding: 10px; text-align: center; font-weight: bold; color: var(--text-gold); }
 
-        .brand {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--white-pure);
-            text-shadow: 0 0 10px var(--pink-main);
-            letter-spacing: 0.5px;
-            cursor: pointer;
-        }
+    /* Service Cards */
+    .card { background: var(--card-bg); border-radius: 16px; padding: 18px; border: 1px solid #4a1f3d; }
+    .card-title { font-size: 18px; font-weight: bold; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .card-desc { font-size: 13px; color: #d0a3c4; margin-bottom: 15px; }
+    
+    .btn { background: linear-gradient(45deg, #e91e63, #ff4081); color: white; border: none; padding: 12px 20px; border-radius: 25px; font-weight: bold; width: 100%; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4); }
+    .btn:active { transform: scale(0.98); }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    /* Modals & Screens */
+    .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-dark); z-index: 100; padding: 20px; display: none; flex-direction: column; overflow-y: auto; }
+    .modal.active { display: flex; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .close-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
 
-        .wallet-btn {
-            background: rgba(255, 105, 180, 0.15);
-            color: var(--white-pure);
-            border: 1px solid var(--pink-glow);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-        }
+    /* Coffee Upload Styles */
+    .upload-box { border: 2px dashed var(--accent-pink); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 15px; background: rgba(255, 77, 141, 0.05); }
+    .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+    .preview-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid var(--accent-pink); }
 
-        .welcome-text {
-            text-align: center;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            font-size: 15px;
-        }
+    /* Tarot Cards Grid */
+    .tarot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+    .tarot-card { aspect-ratio: 2/3; background: linear-gradient(135deg, #3d1b35, #1f0b1a); border: 2px solid var(--accent-pink); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 24px; transition: transform 0.3s; }
+    .tarot-card.selected { transform: translateY(-10px); border-color: var(--text-gold); box-shadow: 0 0 15px var(--text-gold); }
 
-        .welcome-text strong {
-            color: var(--white-pure);
-        }
-
-        /* FALCI KADIN HERO BANNER */
-        .fortune-teller-banner {
-            width: 100%;
-            height: 180px;
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-            margin-bottom: 20px;
-            border: 1px solid var(--pink-glow);
-            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.2);
-        }
-
-        .fortune-teller-banner img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-        }
-
-        .banner-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(31, 11, 24, 0.95), transparent);
-            padding: 15px;
-            text-align: center;
-        }
-
-        .banner-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: var(--white-pure);
-            text-shadow: 0 0 8px var(--pink-main);
-        }
-
-        .card-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid rgba(255, 105, 180, 0.25);
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        }
-
-        .card:active {
-            transform: scale(0.98);
-            border-color: var(--pink-main);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .card-icon {
-            font-size: 24px;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin: 0;
-            color: var(--white-pure);
-        }
-
-        .card-desc {
-            color: var(--text-muted);
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 16px;
-        }
-
-        .card-btn {
-            background: linear-gradient(135deg, #ff69b4 0%, #d81b60 100%);
-            color: var(--white-pure);
-            border: none;
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
-        }
-
-        .wallet-section {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid var(--pink-glow);
-            margin-top: 16px;
-            display: none;
-        }
-
-        .wallet-section.active {
-            display: block;
-        }
-
-        .star-package {
-            background: rgba(255, 105, 180, 0.08);
-            border: 1px solid rgba(255, 105, 180, 0.25);
-            padding: 12px 16px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-
-        .star-package:hover {
-            border-color: var(--pink-main);
-        }
-
-        /* CEO / ADMIN STYLES */
-        .admin-section {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid var(--pink-main);
-            margin-top: 16px;
-            display: none;
-        }
-
-        .admin-section.active {
-            display: block;
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--pink-light);
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .admin-input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid var(--pink-glow);
-            background: rgba(0,0,0,0.4);
-            color: white;
-            box-sizing: border-box;
-            margin-bottom: 10px;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: var(--card-bg);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px;
-            border-top: 1px solid var(--pink-glow);
-            backdrop-filter: blur(10px);
-            box-sizing: border-box;
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-muted);
-            font-size: 12px;
-            text-decoration: none;
-            gap: 4px;
-            cursor: pointer;
-        }
-
-        .nav-item.active {
-            color: var(--pink-light);
-            font-weight: bold;
-        }
-
-        .nav-icon {
-            font-size: 20px;
-        }
-
-        .footer {
-            text-align: center;
-            color: rgba(243, 213, 231, 0.5);
-            font-size: 11px;
-            margin-top: 30px;
-            padding-bottom: 10px;
-        }
-    </style>
+    /* Bottom Nav */
+    .nav { position: fixed; bottom: 0; left: 0; right: 0; background: #140811; border-top: 1px solid #3d1b35; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; color: #a07a95; font-size: 11px; gap: 4px; cursor: pointer; }
+    .nav-item.active { color: var(--accent-pink); }
+  </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="brand" onclick="checkCeoShortcut()">✨ AuraMist</div>
-        <div class="user-info">
-            <span id="user-name" style="font-size:14px; color:var(--text-muted);">Yükleniyor...</span>
-            <button class="wallet-btn" onclick="toggleWallet()">
-                <span>⭐</span> <span id="star-balance">30</span>
-            </button>
-        </div>
+  <!-- Top Bar -->
+  <div class="header">
+    <div class="logo">✨ AuraMist</div>
+    <div class="stars-badge">
+      <span>★</span> <strong id="star-count">60</strong> Yıldız
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container" id="main-view">
+    <div class="banner">
+      <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800" alt="Mystic Banner">
+      <div class="banner-text">🔮 Mistik Enerjiler Seni Bekliyor</div>
     </div>
 
-    <!-- ANA SAYFA GÖRÜNÜMÜ -->
-    <div id="main-view">
-        <div class="welcome-text">
-            Kusursuz AuraMist dünyasına hoş geldin, <strong id="welcome-user">...</strong>!
-        </div>
-
-        <!-- MİSTİK FALCI KADIN GÖRSELİ -->
-        <div class="fortune-teller-banner">
-            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop" alt="Mystic Fortune Teller">
-            <div class="banner-overlay">
-                <div class="banner-title">🔮 Mistik Enerjiler Seni Bekliyor</div>
-            </div>
-        </div>
-
-        <div class="card-container">
-            <div class="card" onclick="startReading('coffee')">
-                <div class="card-header">
-                    <span class="card-icon">☕</span>
-                    <h2 class="card-title">Kahve Falı</h2>
-                </div>
-                <p class="card-desc">Fincanın 2 açısını yükle, yapay zeka enerjini hemen yorumlasın.</p>
-                <button class="card-btn">Fotoğraf Yükle & Başla (10 ⭐)</button>
-            </div>
-
-            <div class="card" onclick="startReading('tarot')">
-                <div class="card-header">
-                    <span class="card-icon">🔮</span>
-                    <h2 class="card-title">Günlük Tarot</h2>
-                </div>
-                <p class="card-desc">Enerjine odaklan, 3 kart seç ve geleceği keşfet.</p>
-                <button class="card-btn">Kartları Seç & Yorumla (15 ⭐)</button>
-            </div>
-        </div>
+    <!-- Kahve Falı Card -->
+    <div class="card">
+      <div class="card-title">☕ Kahve Falı</div>
+      <div class="card-desc">Fincanın 2 açısını yükle, yapay zeka enerjini hemen yorumlasın.</div>
+      <button class="btn" onclick="openCoffeeModal()">Fotoğraf Yükle & Başla (10 ★)</button>
     </div>
 
-    <!-- STARS YÜKLEME CÜZDANI GÖRÜNÜMÜ -->
-    <div id="wallet-view" class="wallet-section">
-        <h3 style="color:var(--pink-light); margin-top:0;">⭐ Telegram Stars Cüzdanı</h3>
-        <p style="color:var(--text-muted); font-size:13px;">Mistik yolculuğunuza devam etmek için cüzdanınıza yıldız yükleyin.</p>
-        
-        <div class="star-package" onclick="buyStars(50, 50)">
-            <div><strong>50 Yıldız</strong><br><small style="color:var(--text-muted);">Temel Paket</small></div>
-            <span style="color:var(--pink-light); font-weight:bold;">50 ⭐</span>
-        </div>
-        <div class="star-package" onclick="buyStars(120, 100)">
-            <div><strong>120 Yıldız</strong><br><small style="color:var(--pink-light);">%20 Bonus Popüler!</small></div>
-            <span style="color:var(--pink-light); font-weight:bold;">100 ⭐</span>
-        </div>
-        <div class="star-package" onclick="buyStars(300, 240)">
-            <div><strong>300 Yıldız</strong><br><small style="color:var(--pink-light);">%25 Bonus VIP Paket</small></div>
-            <span style="color:var(--pink-light); font-weight:bold;">240 ⭐</span>
-        </div>
-        <button class="card-btn" style="margin-top:10px; background:rgba(255,255,255,0.1); color:var(--white-pure);" onclick="toggleWallet()">Geri Dön</button>
+    <!-- Tarot Card -->
+    <div class="card">
+      <div class="card-title">🔮 Günlük Tarot</div>
+      <div class="card-desc">Enerjine odaklan, 3 kart seç ve geleceği keşfet.</div>
+      <button class="btn" onclick="openTarotModal()">Kartları Seç & Yorumla (15 ★)</button>
+    </div>
+  </div>
+
+  <!-- Coffee Upload Modal -->
+  <div class="modal" id="coffee-modal">
+    <div class="modal-header">
+      <h2>☕ Kahve Fotoğrafı Yükle</h2>
+      <button class="close-btn" onclick="closeModals()">✕</button>
+    </div>
+    <p style="margin-bottom: 15px; font-size: 14px; color: #ccc;">Lütfen kahve fincanınızın ve tabağınızın berrak fotoğraflarını çekip ekleyin.</p>
+    
+    <div class="upload-box" onclick="document.getElementById('coffee-input').click()">
+      <div style="font-size: 30px; margin-bottom: 8px;">📷</div>
+      <div style="font-weight: bold;">Fotoğraf Seç / Çek</div>
+      <div style="font-size: 12px; color: #aaa;">En fazla 2 fotoğraf yükleyebilirsiniz</div>
+      <input type="file" id="coffee-input" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event)">
     </div>
 
-    <!-- CEO / ADMIN PANEL GÖRÜNÜMÜ -->
-    <div id="admin-view" class="admin-section">
-        <h3 style="color:var(--pink-light); margin-top:0;">👑 CEO Yönetim Paneli</h3>
-        <p style="color:var(--text-muted); font-size:12px; margin-bottom:15px;">Hoş geldiniz, <strong id="admin-name">Aziz Kartal</strong></p>
-        
-        <div class="stat-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="total-revenue">1,450 ⭐</div>
-                <div class="stat-label">Toplam Kazanç</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="total-users">128</div>
-                <div class="stat-label">Toplam Kullanıcı</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">42</div>
-                <div class="stat-label">Bugünkü Fal</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" style="color:#2ed573;">%99.8</div>
-                <div class="stat-label">Sistem Durumu</div>
-            </div>
-        </div>
+    <div class="preview-grid" id="preview-container"></div>
 
-        <h4 style="margin-bottom:8px; color:var(--pink-light);">Bakiye Ekle / Düzenle</h4>
-        <input type="number" id="admin-add-stars" class="admin-input" placeholder="Eklenecek Yıldız Miktarı (ör: 100)">
-        <button class="card-btn" style="margin-bottom:12px;" onclick="adminAddStars()">Bakiye Hesabıma Ekle</button>
+    <button class="btn" id="analyze-btn" style="display: none;" onclick="startCoffeeReading()">Fallamayı Başlat (10 ★)</button>
+    <div id="coffee-result" style="margin-top: 20px; display: none; background: #22101e; padding: 15px; border-radius: 12px; border: 1px solid var(--accent-pink);">
+      <h3 style="color: var(--text-gold); margin-bottom: 8px;">✨ Kahve Falı Yorumun</h3>
+      <p style="font-size: 14px; line-height: 1.5;" id="coffee-text"></p>
+    </div>
+  </div>
 
-        <button class="card-btn" style="background:rgba(255,255,255,0.1); color:var(--white-pure);" onclick="switchTab('home')">Paneli Kapat</button>
+  <!-- Tarot Selection Modal -->
+  <div class="modal" id="tarot-modal">
+    <div class="modal-header">
+      <h2>🔮 Tarot Kartlarını Seç</h2>
+      <button class="close-btn" onclick="closeModals()">✕</button>
+    </div>
+    <p id="tarot-instruction" style="margin-bottom: 10px; font-size: 14px; color: #ccc;">Enerjini odakla ve 3 kart seç (Seçilen: 0/3)</p>
+
+    <div class="tarot-grid" id="tarot-cards">
+      <!-- 6 cards generated dynamically -->
     </div>
 
-    <div class="footer">
-        Powered by AuraMist AI | 🌍 Tüm Diller
+    <button class="btn" id="tarot-read-btn" style="margin-top: 20px; display: none;" onclick="startTarotReading()">Seçilen Kartları Yorumla (15 ★)</button>
+
+    <div id="tarot-result" style="margin-top: 20px; display: none; background: #22101e; padding: 15px; border-radius: 12px; border: 1px solid var(--accent-pink);">
+      <h3 style="color: var(--text-gold); margin-bottom: 8px;">🔮 Tarot Falı Yorumun</h3>
+      <p style="font-size: 14px; line-height: 1.5;" id="tarot-text"></p>
     </div>
+  </div>
 
-    <nav class="bottom-nav">
-        <a class="nav-item active" id="nav-home" onclick="switchTab('home')">
-            <span class="nav-icon">🏠</span>
-            <span>Ana Sayfa</span>
-        </a>
-        <a class="nav-item" onclick="triggerHaptic(); tg.showAlert('Geçmiş fallarınız yakında burada listelenecek.')">
-            <span class="nav-icon">📜</span>
-            <span>Geçmiş</span>
-        </a>
-        <a class="nav-item" id="nav-wallet" onclick="switchTab('wallet')">
-            <span class="nav-icon">🌟</span>
-            <span>Stars Yükle</span>
-        </a>
-        <a class="nav-item" id="nav-ceo" onclick="openCeoLogin()">
-            <span class="nav-icon">👑</span>
-            <span>CEO Girişi</span>
-        </a>
-    </nav>
+  <!-- Bottom Navigation -->
+  <div class="nav">
+    <div class="nav-item active" onclick="closeModals()">
+      <span>🏠</span>
+      <span>Ana Sayfa</span>
+    </div>
+    <div class="nav-item" onclick="alert('Geçmiş fallarınız yakında burada listelenecek.')">
+      <span>📜</span>
+      <span>Geçmiş</span>
+    </div>
+    <div class="nav-item" onclick="alert('Telegram Stars Satın Alma Ekranı Açılıyor...')">
+      <span>⭐</span>
+      <span>Stars Yükle</span>
+    </div>
+    <div class="nav-item" onclick="promptCEO()">
+      <span>👑</span>
+      <span>CEO Girişi</span>
+    </div>
+  </div>
 
-    <script>
-        // Telegram WebApp Initialization
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
-        tg.setHeaderColor('#1f0b18');
-        tg.setBackgroundColor('#1f0b18');
+  <script>
+    let stars = 60;
+    let selectedCards = [];
+    let uploadedImages = [];
 
-        const user = tg.initDataUnsafe?.user;
+    // Telegram Haptics
+    const tg = window.Telegram?.WebApp;
+    if (tg) tg.expand();
 
-        if (user) {
-            document.getElementById('user-name').innerText = user.first_name;
-            document.getElementById('welcome-user').innerText = user.first_name;
-        } else {
-            document.getElementById('user-name').innerText = "Aziz Kartal";
-            document.getElementById('welcome-user').innerText = "Aziz Bey";
-        }
+    function triggerHaptic() {
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    }
 
-        let currentBalance = 30;
-        let isCeoLoggedIn = false;
-        const CEO_PIN = "Artom.0202";
+    function openCoffeeModal() {
+      triggerHaptic();
+      document.getElementById('coffee-modal').classList.add('active');
+    }
 
-        document.getElementById('star-balance').innerText = currentBalance;
+    function openTarotModal() {
+      triggerHaptic();
+      document.getElementById('tarot-modal').classList.add('active');
+      initTarotGrid();
+    }
 
-        function triggerHaptic(type = 'light') {
-            if (tg.HapticFeedback) {
-                if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
-                else if (type === 'error') tg.HapticFeedback.notificationOccurred('error');
-                else tg.HapticFeedback.impactOccurred('light');
-            }
-        }
+    function closeModals() {
+      triggerHaptic();
+      document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+    }
 
-        function switchTab(tab) {
-            triggerHaptic();
-            const mainView = document.getElementById('main-view');
-            const walletView = document.getElementById('wallet-view');
-            const adminView = document.getElementById('admin-view');
-            const navHome = document.getElementById('nav-home');
-            const navWallet = document.getElementById('nav-wallet');
-            const navCeo = document.getElementById('nav-ceo');
+    // Image Upload Handling
+    function handleImageUpload(e) {
+      const files = e.target.files;
+      const container = document.getElementById('preview-container');
+      container.innerHTML = '';
+      uploadedImages = [];
 
-            mainView.style.display = 'none';
-            walletView.classList.remove('active');
-            adminView.classList.remove('active');
-            navHome.classList.remove('active');
-            navWallet.classList.remove('active');
-            if(navCeo) navCeo.classList.remove('active');
+      for (let i = 0; i < Math.min(files.length, 2); i++) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          uploadedImages.push(event.target.result);
+          const img = document.createElement('img');
+          img.src = event.target.result;
+          img.className = 'preview-img';
+          container.appendChild(img);
+          
+          if (uploadedImages.length > 0) {
+            document.getElementById('analyze-btn').style.display = 'block';
+          }
+        };
+        reader.readAsDataURL(files[i]);
+      }
+    }
 
-            if (tab === 'wallet') {
-                walletView.classList.add('active');
-                navWallet.classList.add('active');
-            } else if (tab === 'admin') {
-                adminView.classList.add('active');
-                if(navCeo) navCeo.classList.add('active');
-            } else {
-                mainView.style.display = 'block';
-                navHome.classList.add('active');
-            }
-        }
+    function startCoffeeReading() {
+      if (stars < 10) return alert('Yetersiz Yıldız!');
+      triggerHaptic();
+      stars -= 10;
+      document.getElementById('star-count').innerText = stars;
 
-        function openCeoLogin() {
-            triggerHaptic();
-            if (isCeoLoggedIn) {
-                switchTab('admin');
-                return;
-            }
+      const btn = document.getElementById('analyze-btn');
+      btn.innerText = 'Fincan Analiz Ediliyor... ✨';
+      btn.disabled = true;
 
-            const pin = prompt("👑 CEO Paneli Giriş Şifresini Giriniz:");
-            if (pin === CEO_PIN) {
-                isCeoLoggedIn = true;
-                triggerHaptic('success');
-                tg.showAlert("Giriş Başarılı! Hoş geldiniz Sayın Aziz Kartal.");
-                switchTab('admin');
-            } else if (pin !== null) {
-                triggerHaptic('error');
-                tg.showAlert("Hatalı Şifre! Erişim Engellendi.");
-            }
-        }
+      setTimeout(() => {
+        btn.style.display = 'none';
+        document.getElementById('coffee-result').style.display = 'block';
+        document.getElementById('coffee-text').innerText = 'Fincanınızda yükselen bir kuş figürü ve yol işareti görünüyor. Yakın zamanda bir haber veya beklenmedik bir fırsat kapınızı çalabilir. İçsel enerjiniz oldukça yüksek!';
+      }, 2000);
+    }
 
-        let clickCount = 0;
-        function checkCeoShortcut() {
-            clickCount++;
-            if (clickCount >= 3) {
-                clickCount = 0;
-                openCeoLogin();
-            }
-        }
+    // Tarot Logic
+    function initTarotGrid() {
+      const grid = document.getElementById('tarot-cards');
+      grid.innerHTML = '';
+      selectedCards = [];
+      document.getElementById('tarot-read-btn').style.display = 'none';
+      document.getElementById('tarot-result').style.display = 'none';
+      document.getElementById('tarot-instruction').innerText = 'Enerjini odakla ve 3 kart seç (Seçilen: 0/3)';
 
-        function adminAddStars() {
-            const val = parseInt(document.getElementById('admin-add-stars').value);
-            if (val && val > 0) {
-                currentBalance += val;
-                document.getElementById('star-balance').innerText = currentBalance;
-                document.getElementById('admin-add-stars').value = '';
-                triggerHaptic('success');
-                tg.showAlert(`Başarılı! Hesabınıza ${val} ⭐ eklendi.`);
-            } else {
-                triggerHaptic('error');
-                tg.showAlert("Lütfen geçerli bir sayı girin.");
-            }
-        }
+      for (let i = 1; i <= 6; i++) {
+        const card = document.createElement('div');
+        card.className = 'tarot-card';
+        card.innerText = '✨';
+        card.onclick = () => selectCard(card, i);
+        grid.appendChild(card);
+      }
+    }
 
-        function toggleWallet() {
-            const walletView = document.getElementById('wallet-view');
-            if (walletView.classList.contains('active')) {
-                switchTab('home');
-            } else {
-                switchTab('wallet');
-            }
-        }
+    function selectCard(cardEl, id) {
+      triggerHaptic();
+      if (selectedCards.includes(id)) {
+        selectedCards = selectedCards.filter(c => c !== id);
+        cardEl.classList.remove('selected');
+      } else {
+        if (selectedCards.length >= 3) return;
+        selectedCards.push(id);
+        cardEl.classList.add('selected');
+      }
 
-        function startReading(type) {
-            triggerHaptic();
-            const cost = type === 'coffee' ? 10 : 15;
-            const readingName = type === 'coffee' ? 'Kahve Falı' : 'Tarot';
+      document.getElementById('tarot-instruction').innerText = `Enerjini odakla ve 3 kart seç (Seçilen: ${selectedCards.length}/3)`;
+      if (selectedCards.length === 3) {
+        document.getElementById('tarot-read-btn').style.display = 'block';
+      } else {
+        document.getElementById('tarot-read-btn').style.display = 'none';
+      }
+    }
 
-            if (currentBalance < cost) {
-                triggerHaptic('error');
-                tg.showConfirm("Yıldızınız yetersiz! Cüzdanınıza yıldız yüklemek ister misiniz?", (confirmed) => {
-                    if (confirmed) switchTab('wallet');
-                });
-                return;
-            }
+    function startTarotReading() {
+      if (stars < 15) return alert('Yetersiz Yıldız!');
+      triggerHaptic();
+      stars -= 15;
+      document.getElementById('star-count').innerText = stars;
 
-            tg.showConfirm(`${cost} Yıldız harcanarak ${readingName} başlatılacak. Emin misiniz?`, (confirmed) => {
-                if (confirmed) {
-                    currentBalance -= cost;
-                    document.getElementById('star-balance').innerText = currentBalance;
-                    triggerHaptic('success');
-                    tg.showAlert("Talebiniz alındı! Mistik enerjileriniz analiz ediliyor...");
-                }
-            });
-        }
+      const btn = document.getElementById('tarot-read-btn');
+      btn.innerText = 'Kartlar Okunuyor... ✨';
+      btn.disabled = true;
 
-        function buyStars(amount, price) {
-            triggerHaptic();
-            tg.showConfirm(`${amount} Yıldız cüzdanınıza eklensin mi? (Telegram Stars Ödeme Akışı)`, (confirmed) => {
-                if (confirmed) {
-                    currentBalance += amount;
-                    document.getElementById('star-balance').innerText = currentBalance;
-                    triggerHaptic('success');
-                    tg.showAlert(`Tebrikler! ${amount} Yıldız cüzdanınıza başarıyla yüklendi ⭐`);
-                    switchTab('home');
-                }
-            });
-        }
-    </script>
+      setTimeout(() => {
+        btn.style.display = 'none';
+        document.getElementById('tarot-result').style.display = 'block';
+        document.getElementById('tarot-text').innerText = 'Seçtiğiniz kartlar (Güneş, Kupa Ası ve İmparatoriçe) şans ve bolluk dönemine girdiğinizi gösteriyor. Kararlarınızda sezgilerinize güvenin.';
+      }, 2000);
+    }
+
+    function promptCEO() {
+      const pin = prompt("CEO Giriş Şifresi:");
+      if (pin === "Artom.0202") {
+        alert("Hoş geldiniz Sayın Aziz Kartal. Yönetici Paneli Aktif.");
+      } else if (pin) {
+        alert("Hatalı PIN!");
+      }
+    }
+  </script>
 </body>
 </html>
-
