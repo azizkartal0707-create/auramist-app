@@ -94,4 +94,192 @@
         .card {
             background: var(--card-bg);
             border-radius: 20px;
-          
+            padding: 20px;
+            border: 1px solid rgba(155, 81, 224, 0.2);
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .card:active {
+            transform: scale(0.98);
+            border-color: var(--purple-main);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card-icon {
+            font-size: 24px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .card-btn {
+            background: linear-gradient(135deg, #9b51e0 0%, #6b21a8 100%);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(155, 81, 224, 0.4);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px;
+            border-top: 1px solid var(--purple-glow);
+            backdrop-filter: blur(10px);
+            box-sizing: border-box;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 12px;
+            text-decoration: none;
+            gap: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--gold-main);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(176, 168, 194, 0.5);
+            font-size: 11px;
+            margin-top: 30px;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="brand">✨ AuraMist</div>
+        <div class="user-info">
+            <span id="user-name" style="font-size:14px; color:var(--text-muted);">Yükleniyor...</span>
+            <button class="wallet-btn">
+                <span>⭐</span> <span id="star-balance">30</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="welcome-text">
+        Kusursuz AuraMist dünyasına hoş geldin, <strong id="welcome-user">...</strong>!
+    </div>
+
+    <div class="card-container">
+        <div class="card" onclick="startReading('coffee')">
+            <div class="card-header">
+                <span class="card-icon">☕</span>
+                <h2 class="card-title">Kahve Falı</h2>
+            </div>
+            <p class="card-desc">Fincanın 2 açısını yükle, yapay zeka enerjini hemen yorumlasın.</p>
+            <button class="card-btn">Fotoğraf Yükle & Başla (10 ⭐)</button>
+        </div>
+
+        <div class="card" onclick="startReading('tarot')">
+            <div class="card-header">
+                <span class="card-icon">🔮</span>
+                <h2 class="card-title">Günlük Tarot</h2>
+            </div>
+            <p class="card-desc">Enerjine odaklan, 3 kart seç ve geleceği keşfet.</p>
+            <button class="card-btn">Kartları Seç & Yorumla (15 ⭐)</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        Powered by AuraMist AI | 🌍 Tüm Diller
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">🏠</span>
+            <span>Ana Sayfa</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">📜</span>
+            <span>Geçmiş</span>
+        </a>
+        <a href="#" class="nav-item" style="color:var(--gold-main);">
+            <span class="nav-icon">🌟</span>
+            <span>Stars Yükle</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span>Profil</span>
+        </a>
+    </nav>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        const user = tg.initDataUnsafe?.user;
+
+        if (user) {
+            document.getElementById('user-name').innerText = user.first_name;
+            document.getElementById('welcome-user').innerText = user.first_name;
+        } else {
+            document.getElementById('user-name').innerText = "Misafir";
+            document.getElementById('welcome-user').innerText = "Gezgin";
+        }
+
+        let currentBalance = 30;
+        document.getElementById('star-balance').innerText = currentBalance;
+
+        function startReading(type) {
+            const cost = type === 'coffee' ? 10 : 15;
+            const readingName = type === 'coffee' ? 'Kahve Falı' : 'Tarot';
+
+            if (currentBalance < cost) {
+                tg.showAlert("Yıldızınız yetersiz! Lütfen cüzdanınıza yıldız ekleyin.");
+                return;
+            }
+
+            tg.showConfirm(`${cost} Yıldız harcanarak ${readingName} başlatılacak. Emin misiniz?`, (confirmed) => {
+                if (confirmed) {
+                    currentBalance -= cost;
+                    document.getElementById('star-balance').innerText = currentBalance;
+                    tg.showAlert("Talebiniz alındı! Mistik enerjileriniz analiz ediliyor...");
+                }
+            });
+        }
+    </script>
+</body>
+</html>
