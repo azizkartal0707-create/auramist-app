@@ -145,6 +145,35 @@
             box-shadow: 0 4px 15px rgba(155, 81, 224, 0.4);
         }
 
+        .wallet-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            margin-top: 16px;
+            display: none;
+        }
+
+        .wallet-section.active {
+            display: block;
+        }
+
+        .star-package {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 12px 16px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .star-package:hover {
+            border-color: var(--gold-main);
+        }
+
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -168,6 +197,7 @@
             font-size: 12px;
             text-decoration: none;
             gap: 4px;
+            cursor: pointer;
         }
 
         .nav-item.active {
@@ -193,34 +223,57 @@
         <div class="brand">✨ AuraMist</div>
         <div class="user-info">
             <span id="user-name" style="font-size:14px; color:var(--text-muted);">Yükleniyor...</span>
-            <button class="wallet-btn">
+            <button class="wallet-btn" onclick="toggleWallet()">
                 <span>⭐</span> <span id="star-balance">30</span>
             </button>
         </div>
     </div>
 
-    <div class="welcome-text">
-        Kusursuz AuraMist dünyasına hoş geldin, <strong id="welcome-user">...</strong>!
+    <!-- ANA SAYFA GÖRÜNÜMÜ -->
+    <div id="main-view">
+        <div class="welcome-text">
+            Kusursuz AuraMist dünyasına hoş geldin, <strong id="welcome-user">...</strong>!
+        </div>
+
+        <div class="card-container">
+            <div class="card" onclick="startReading('coffee')">
+                <div class="card-header">
+                    <span class="card-icon">☕</span>
+                    <h2 class="card-title">Kahve Falı</h2>
+                </div>
+                <p class="card-desc">Fincanın 2 açısını yükle, yapay zeka enerjini hemen yorumlasın.</p>
+                <button class="card-btn">Fotoğraf Yükle & Başla (10 ⭐)</button>
+            </div>
+
+            <div class="card" onclick="startReading('tarot')">
+                <div class="card-header">
+                    <span class="card-icon">🔮</span>
+                    <h2 class="card-title">Günlük Tarot</h2>
+                </div>
+                <p class="card-desc">Enerjine odaklan, 3 kart seç ve geleceği keşfet.</p>
+                <button class="card-btn">Kartları Seç & Yorumla (15 ⭐)</button>
+            </div>
+        </div>
     </div>
 
-    <div class="card-container">
-        <div class="card" onclick="startReading('coffee')">
-            <div class="card-header">
-                <span class="card-icon">☕</span>
-                <h2 class="card-title">Kahve Falı</h2>
-            </div>
-            <p class="card-desc">Fincanın 2 açısını yükle, yapay zeka enerjini hemen yorumlasın.</p>
-            <button class="card-btn">Fotoğraf Yükle & Başla (10 ⭐)</button>
+    <!-- STARS YÜKLEME CÜZDANI GÖRÜNÜMÜ -->
+    <div id="wallet-view" class="wallet-section">
+        <h3 style="color:var(--gold-main); margin-top:0;">⭐ Telegram Stars Cüzdanı</h3>
+        <p style="color:var(--text-muted); font-size:13px;">Mistik yolculuğunuza devam etmek için cüzdanınıza yıldız yükleyin.</p>
+        
+        <div class="star-package" onclick="buyStars(50, 50)">
+            <div><strong>50 Yıldız</strong><br><small style="color:var(--text-muted);">Temel Paket</small></div>
+            <span style="color:var(--gold-main); font-weight:bold;">50 ⭐</span>
         </div>
-
-        <div class="card" onclick="startReading('tarot')">
-            <div class="card-header">
-                <span class="card-icon">🔮</span>
-                <h2 class="card-title">Günlük Tarot</h2>
-            </div>
-            <p class="card-desc">Enerjine odaklan, 3 kart seç ve geleceği keşfet.</p>
-            <button class="card-btn">Kartları Seç & Yorumla (15 ⭐)</button>
+        <div class="star-package" onclick="buyStars(120, 100)">
+            <div><strong>120 Yıldız</strong><br><small style="color:var(--gold-main);">%20 Bonus Popüler!</small></div>
+            <span style="color:var(--gold-main); font-weight:bold;">100 ⭐</span>
         </div>
+        <div class="star-package" onclick="buyStars(300, 240)">
+            <div><strong>300 Yıldız</strong><br><small style="color:var(--gold-main);">%25 Bonus VIP Paket</small></div>
+            <span style="color:var(--gold-main); font-weight:bold;">240 ⭐</span>
+        </div>
+        <button class="card-btn" style="margin-top:10px; background:rgba(255,255,255,0.1); color:var(--text-light);" onclick="toggleWallet()">Geri Dön</button>
     </div>
 
     <div class="footer">
@@ -228,19 +281,19 @@
     </div>
 
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active">
+        <a class="nav-item active" id="nav-home" onclick="switchTab('home')">
             <span class="nav-icon">🏠</span>
             <span>Ana Sayfa</span>
         </a>
-        <a href="#" class="nav-item">
+        <a class="nav-item" onclick="tg.showAlert('Geçmiş fallarınız yakında burada listelenecek.')">
             <span class="nav-icon">📜</span>
             <span>Geçmiş</span>
         </a>
-        <a href="#" class="nav-item" style="color:var(--gold-main);">
+        <a class="nav-item" id="nav-wallet" onclick="switchTab('wallet')">
             <span class="nav-icon">🌟</span>
             <span>Stars Yükle</span>
         </a>
-        <a href="#" class="nav-item">
+        <a class="nav-item" onclick="tg.showAlert('Profil ayarlarınız ve cüzdan bilgileriniz.')">
             <span class="nav-icon">👤</span>
             <span>Profil</span>
         </a>
@@ -263,12 +316,42 @@
         let currentBalance = 30;
         document.getElementById('star-balance').innerText = currentBalance;
 
+        function switchTab(tab) {
+            const mainView = document.getElementById('main-view');
+            const walletView = document.getElementById('wallet-view');
+            const navHome = document.getElementById('nav-home');
+            const navWallet = document.getElementById('nav-wallet');
+
+            if (tab === 'wallet') {
+                mainView.style.display = 'none';
+                walletView.classList.add('active');
+                navWallet.classList.add('active');
+                navHome.classList.remove('active');
+            } else {
+                mainView.style.display = 'block';
+                walletView.classList.remove('active');
+                navHome.classList.add('active');
+                navWallet.classList.remove('active');
+            }
+        }
+
+        function toggleWallet() {
+            const walletView = document.getElementById('wallet-view');
+            if (walletView.classList.contains('active')) {
+                switchTab('home');
+            } else {
+                switchTab('wallet');
+            }
+        }
+
         function startReading(type) {
             const cost = type === 'coffee' ? 10 : 15;
             const readingName = type === 'coffee' ? 'Kahve Falı' : 'Tarot';
 
             if (currentBalance < cost) {
-                tg.showAlert("Yıldızınız yetersiz! Lütfen cüzdanınıza yıldız ekleyin.");
+                tg.showConfirm("Yıldızınız yetersiz! Cüzdanınıza yıldız yüklemek ister misiniz?", (confirmed) => {
+                    if (confirmed) switchTab('wallet');
+                });
                 return;
             }
 
@@ -277,6 +360,17 @@
                     currentBalance -= cost;
                     document.getElementById('star-balance').innerText = currentBalance;
                     tg.showAlert("Talebiniz alındı! Mistik enerjileriniz analiz ediliyor...");
+                }
+            });
+        }
+
+        function buyStars(amount, price) {
+            tg.showConfirm(`${amount} Yıldız cüzdanınıza eklensin mi? (Simülasyon Ödemesi)`, (confirmed) => {
+                if (confirmed) {
+                    currentBalance += amount;
+                    document.getElementById('star-balance').innerText = currentBalance;
+                    tg.showAlert(`Tebrikler! ${amount} Yıldız cüzdanınıza başarıyla yüklendi ⭐`);
+                    switchTab('home');
                 }
             });
         }
