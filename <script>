@@ -1,0 +1,126 @@
+// Gerçek Tarot Kart Görselleri
+const tarotBackImage = "https://images.unsplash.com/photo-1601024445121-e5b82f020549?q=80&w=400"; // Mistik Kart Arkası
+const tarotFrontImages = [
+  { name: "Kupa Ası", img: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=400", desc: "Yeni duygusal başlangıçlar ve huzur." },
+  { name: "İmparatoriçe", img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=400", desc: "Bolluk, berekat ve üretkenlik dönemi." },
+  { name: "Güneş", img: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=400", desc: "Tam aydınlanma, başarı ve pozitif enerji." }
+];
+
+let selectedCards = [];
+let uploadedImages = [];
+
+function openCoffeeModal() {
+  document.getElementById('coffee-modal').classList.add('active');
+}
+
+function openTarotModal() {
+  document.getElementById('tarot-modal').classList.add('active');
+  initTarotGrid();
+}
+
+function closeModals() {
+  document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+}
+
+// Görsel Yükleme İşlemi
+function handleImageUpload(e) {
+  const files = e.target.files;
+  const container = document.getElementById('preview-container');
+  container.innerHTML = '';
+  uploadedImages = [];
+
+  for (let i = 0; i < Math.min(files.length, 2); i++) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      uploadedImages.push(event.target.result);
+      const img = document.createElement('img');
+      img.src = event.target.result;
+      img.className = 'preview-img';
+      container.appendChild(img);
+      
+      if (uploadedImages.length > 0) {
+        document.getElementById('analyze-btn').style.display = 'block';
+      }
+    };
+    reader.readAsDataURL(files[i]);
+  }
+}
+
+// Kahve Yapay Zeka Yorumu
+function startCoffeeReading() {
+  if (stars < 10) return alert('Yetersiz Yıldız!');
+  stars -= 10;
+  document.getElementById('star-count').innerText = stars;
+
+  const btn = document.getElementById('analyze-btn');
+  btn.innerText = 'Yapay Zeka Fincanı İnceliyor... ✨';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    btn.style.display = 'none';
+    document.getElementById('coffee-result').style.display = 'block';
+    document.getElementById('coffee-text').innerText = 'Fincanınızdaki telve şekillerinde belirgin bir balık ve yol sembolü çıkıyor. Yakın zamanda maddi bir rahatlama ve bir yolculuk fırsatı görünüyor.';
+  }, 2200);
+}
+
+// Tarot Kartları Dizilimi
+function initTarotGrid() {
+  const grid = document.getElementById('tarot-cards');
+  grid.innerHTML = '';
+  selectedCards = [];
+  document.getElementById('tarot-read-btn').style.display = 'none';
+  document.getElementById('tarot-result').style.display = 'none';
+  document.getElementById('tarot-instruction').innerText = 'Enerjine odaklan ve 3 kart seç (Seçilen: 0/3)';
+
+  for (let i = 0; i < 6; i++) {
+    const card = document.createElement('div');
+    card.className = 'tarot-card';
+    card.style.backgroundImage = `url('${tarotBackImage}')`;
+    card.onclick = () => selectCard(card, i);
+    grid.appendChild(card);
+  }
+}
+
+// Kart Seçimi Mantığı
+function selectCard(cardEl, id) {
+  if (selectedCards.includes(id)) {
+    selectedCards = selectedCards.filter(c => c !== id);
+    cardEl.classList.remove('selected');
+  } else {
+    if (selectedCards.length >= 3) return;
+    selectedCards.push(id);
+    cardEl.classList.add('selected');
+  }
+
+  document.getElementById('tarot-instruction').innerText = `Enerjine odaklan ve 3 kart seç (Seçilen: ${selectedCards.length}/3)`;
+  document.getElementById('tarot-read-btn').style.display = selectedCards.length === 3 ? 'block' : 'none';
+}
+
+// Seçilen Kartları Çevirme & Yorumlama
+function startTarotReading() {
+  if (stars < 15) return alert('Yetersiz Yıldız!');
+  stars -= 15;
+  document.getElementById('star-count').innerText = stars;
+
+  const btn = document.getElementById('tarot-read-btn');
+  btn.innerText = 'Kartlar Çevriliyor... ✨';
+  btn.disabled = true;
+
+  // Seçilen kartları ön yüz görselleriyle değiştir
+  const cards = document.querySelectorAll('.tarot-card.selected');
+  cards.forEach((card, index) => {
+    setTimeout(() => {
+      card.style.backgroundImage = `url('${tarotFrontImages[index].img}')`;
+    }, index * 300);
+  });
+
+  setTimeout(() => {
+    btn.style.display = 'none';
+    document.getElementById('tarot-result').style.display = 'block';
+    document.getElementById('tarot-text').innerHTML = `
+      <strong>1. ${tarotFrontImages[0].name}:</strong> ${tarotFrontImages[0].desc}<br><br>
+      <strong>2. ${tarotFrontImages[1].name}:</strong> ${tarotFrontImages[1].desc}<br><br>
+      <strong>3. ${tarotFrontImages[2].name}:</strong> ${tarotFrontImages[2].desc}
+    `;
+  }, 1800);
+}
