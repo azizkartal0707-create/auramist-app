@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+            <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -8,15 +9,16 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-dark: #0f0c1b;
-            --bg-glow: linear-gradient(135deg, #1a102f 0%, #0f0c1b 100%);
+            --bg-dark: #120814;
+            --bg-glow: linear-gradient(135deg, #240a1a 0%, #120814 100%);
             --purple-main: #9b51e0;
-            --purple-glow: rgba(155, 81, 224, 0.5);
+            --red-main: #ff334b;
+            --red-glow: rgba(255, 51, 75, 0.4);
             --gold-main: #ffd700;
-            --gold-text: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+            --gold-text: linear-gradient(135deg, #ff334b 0%, #ff8800 100%);
             --text-light: #ffffff;
-            --text-muted: #b0a8c2;
-            --card-bg: rgba(26, 20, 43, 0.9);
+            --text-muted: #c2a8b0;
+            --card-bg: rgba(36, 16, 28, 0.9);
         }
 
         body {
@@ -39,7 +41,7 @@
             background: var(--card-bg);
             padding: 12px 16px;
             border-radius: 16px;
-            border: 1px solid var(--purple-glow);
+            border: 1px solid var(--red-glow);
             backdrop-filter: blur(10px);
             margin-bottom: 20px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.5);
@@ -52,6 +54,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 0.5px;
+            cursor: pointer;
         }
 
         .user-info {
@@ -61,9 +64,9 @@
         }
 
         .wallet-btn {
-            background: rgba(255, 215, 0, 0.1);
-            color: var(--gold-main);
-            border: 1px solid rgba(255, 215, 0, 0.3);
+            background: rgba(255, 51, 75, 0.1);
+            color: var(--red-main);
+            border: 1px solid rgba(255, 51, 75, 0.3);
             padding: 6px 12px;
             border-radius: 20px;
             font-weight: bold;
@@ -95,7 +98,7 @@
             background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
-            border: 1px solid rgba(155, 81, 224, 0.2);
+            border: 1px solid rgba(255, 51, 75, 0.2);
             transition: 0.3s;
             position: relative;
             overflow: hidden;
@@ -104,7 +107,7 @@
 
         .card:active {
             transform: scale(0.98);
-            border-color: var(--purple-main);
+            border-color: var(--red-main);
         }
 
         .card-header {
@@ -133,7 +136,7 @@
         }
 
         .card-btn {
-            background: linear-gradient(135deg, #9b51e0 0%, #6b21a8 100%);
+            background: linear-gradient(135deg, #ff334b 0%, #b30024 100%);
             color: white;
             border: none;
             width: 100%;
@@ -142,14 +145,14 @@
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(155, 81, 224, 0.4);
+            box-shadow: 0 4px 15px rgba(255, 51, 75, 0.4);
         }
 
         .wallet-section {
             background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
-            border: 1px solid rgba(255, 215, 0, 0.3);
+            border: 1px solid rgba(255, 51, 75, 0.3);
             margin-top: 16px;
             display: none;
         }
@@ -159,8 +162,8 @@
         }
 
         .star-package {
-            background: rgba(255, 215, 0, 0.05);
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            background: rgba(255, 51, 75, 0.05);
+            border: 1px solid rgba(255, 51, 75, 0.2);
             padding: 12px 16px;
             border-radius: 12px;
             display: flex;
@@ -171,7 +174,58 @@
         }
 
         .star-package:hover {
-            border-color: var(--gold-main);
+            border-color: var(--red-main);
+        }
+
+        /* CEO / ADMIN STYLES */
+        .admin-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid var(--red-main);
+            margin-top: 16px;
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--red-main);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--red-glow);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            box-sizing: border-box;
+            margin-bottom: 10px;
         }
 
         .bottom-nav {
@@ -183,7 +237,7 @@
             display: flex;
             justify-content: space-around;
             padding: 12px;
-            border-top: 1px solid var(--purple-glow);
+            border-top: 1px solid var(--red-glow);
             backdrop-filter: blur(10px);
             box-sizing: border-box;
             z-index: 100;
@@ -201,7 +255,7 @@
         }
 
         .nav-item.active {
-            color: var(--gold-main);
+            color: var(--red-main);
         }
 
         .nav-icon {
@@ -210,7 +264,7 @@
 
         .footer {
             text-align: center;
-            color: rgba(176, 168, 194, 0.5);
+            color: rgba(194, 168, 176, 0.5);
             font-size: 11px;
             margin-top: 30px;
             padding-bottom: 10px;
@@ -220,7 +274,7 @@
 <body>
 
     <div class="header">
-        <div class="brand">✨ AuraMist</div>
+        <div class="brand" onclick="checkCeoShortcut()">✨ AuraMist</div>
         <div class="user-info">
             <span id="user-name" style="font-size:14px; color:var(--text-muted);">Yükleniyor...</span>
             <button class="wallet-btn" onclick="toggleWallet()">
@@ -258,22 +312,52 @@
 
     <!-- STARS YÜKLEME CÜZDANI GÖRÜNÜMÜ -->
     <div id="wallet-view" class="wallet-section">
-        <h3 style="color:var(--gold-main); margin-top:0;">⭐ Telegram Stars Cüzdanı</h3>
+        <h3 style="color:var(--red-main); margin-top:0;">⭐ Telegram Stars Cüzdanı</h3>
         <p style="color:var(--text-muted); font-size:13px;">Mistik yolculuğunuza devam etmek için cüzdanınıza yıldız yükleyin.</p>
         
         <div class="star-package" onclick="buyStars(50, 50)">
             <div><strong>50 Yıldız</strong><br><small style="color:var(--text-muted);">Temel Paket</small></div>
-            <span style="color:var(--gold-main); font-weight:bold;">50 ⭐</span>
+            <span style="color:var(--red-main); font-weight:bold;">50 ⭐</span>
         </div>
         <div class="star-package" onclick="buyStars(120, 100)">
-            <div><strong>120 Yıldız</strong><br><small style="color:var(--gold-main);">%20 Bonus Popüler!</small></div>
-            <span style="color:var(--gold-main); font-weight:bold;">100 ⭐</span>
+            <div><strong>120 Yıldız</strong><br><small style="color:var(--red-main);">%20 Bonus Popüler!</small></div>
+            <span style="color:var(--red-main); font-weight:bold;">100 ⭐</span>
         </div>
         <div class="star-package" onclick="buyStars(300, 240)">
-            <div><strong>300 Yıldız</strong><br><small style="color:var(--gold-main);">%25 Bonus VIP Paket</small></div>
-            <span style="color:var(--gold-main); font-weight:bold;">240 ⭐</span>
+            <div><strong>300 Yıldız</strong><br><small style="color:var(--red-main);">%25 Bonus VIP Paket</small></div>
+            <span style="color:var(--red-main); font-weight:bold;">240 ⭐</span>
         </div>
         <button class="card-btn" style="margin-top:10px; background:rgba(255,255,255,0.1); color:var(--text-light);" onclick="toggleWallet()">Geri Dön</button>
+    </div>
+
+    <!-- CEO / ADMIN PANEL GÖRÜNÜMÜ -->
+    <div id="admin-view" class="admin-section">
+        <h3 style="color:var(--red-main); margin-top:0;">👑 CEO Yönetim Paneli</h3>
+        
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="total-revenue">1,450 ⭐</div>
+                <div class="stat-label">Toplam Kazanç</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-users">128</div>
+                <div class="stat-label">Toplam Kullanıcı</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">42</div>
+                <div class="stat-label">Bugünkü Fal</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" style="color:#2ed573;">%99.8</div>
+                <div class="stat-label">Sistem Durumu</div>
+            </div>
+        </div>
+
+        <h4 style="margin-bottom:8px; color:var(--red-main);">Bakiye Ekle / Düzenle</h4>
+        <input type="number" id="admin-add-stars" class="admin-input" placeholder="Eklenecek Yıldız Miktarı (ör: 100)">
+        <button class="card-btn" style="margin-bottom:12px;" onclick="adminAddStars()">Bakiye Hesabıma Ekle</button>
+
+        <button class="card-btn" style="background:rgba(255,255,255,0.1); color:var(--text-light);" onclick="switchTab('home')">Paneli Kapat</button>
     </div>
 
     <div class="footer">
@@ -293,9 +377,9 @@
             <span class="nav-icon">🌟</span>
             <span>Stars Yükle</span>
         </a>
-        <a class="nav-item" onclick="tg.showAlert('Profil ayarlarınız ve cüzdan bilgileriniz.')">
-            <span class="nav-icon">👤</span>
-            <span>Profil</span>
+        <a class="nav-item" id="nav-ceo" onclick="openCeoLogin()">
+            <span class="nav-icon">👑</span>
+            <span>CEO Girişi</span>
         </a>
     </nav>
 
@@ -314,24 +398,72 @@
         }
 
         let currentBalance = 30;
+        let isCeoLoggedIn = false;
+        const CEO_PIN = "0707";
+
         document.getElementById('star-balance').innerText = currentBalance;
 
         function switchTab(tab) {
             const mainView = document.getElementById('main-view');
             const walletView = document.getElementById('wallet-view');
+            const adminView = document.getElementById('admin-view');
             const navHome = document.getElementById('nav-home');
             const navWallet = document.getElementById('nav-wallet');
+            const navCeo = document.getElementById('nav-ceo');
+
+            mainView.style.display = 'none';
+            walletView.classList.remove('active');
+            adminView.classList.remove('active');
+            navHome.classList.remove('active');
+            navWallet.classList.remove('active');
+            if(navCeo) navCeo.classList.remove('active');
 
             if (tab === 'wallet') {
-                mainView.style.display = 'none';
                 walletView.classList.add('active');
                 navWallet.classList.add('active');
-                navHome.classList.remove('active');
+            } else if (tab === 'admin') {
+                adminView.classList.add('active');
+                if(navCeo) navCeo.classList.add('active');
             } else {
                 mainView.style.display = 'block';
-                walletView.classList.remove('active');
                 navHome.classList.add('active');
-                navWallet.classList.remove('active');
+            }
+        }
+
+        function openCeoLogin() {
+            if (isCeoLoggedIn) {
+                switchTab('admin');
+                return;
+            }
+
+            const pin = prompt("👑 CEO Paneli Giriş PIN Kodunu Giriniz:");
+            if (pin === CEO_PIN) {
+                isCeoLoggedIn = true;
+                tg.showAlert("Giriş Başarılı! CEO Yönetim Paneline Hoş Geldiniz Sayın Yöneticim.");
+                switchTab('admin');
+            } else if (pin !== null) {
+                tg.showAlert("Hatalı PIN Kodu! Erişim Engellendi.");
+            }
+        }
+
+        let clickCount = 0;
+        function checkCeoShortcut() {
+            clickCount++;
+            if (clickCount >= 3) {
+                clickCount = 0;
+                openCeoLogin();
+            }
+        }
+
+        function adminAddStars() {
+            const val = parseInt(document.getElementById('admin-add-stars').value);
+            if (val && val > 0) {
+                currentBalance += val;
+                document.getElementById('star-balance').innerText = currentBalance;
+                document.getElementById('admin-add-stars').value = '';
+                tg.showAlert(`Başarılı! Hesabınıza ${val} ⭐ eklendi.`);
+            } else {
+                tg.showAlert("Lütfen geçerli bir sayı girin.");
             }
         }
 
