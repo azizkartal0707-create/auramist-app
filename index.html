@@ -24,33 +24,59 @@
 
     /* Content Area */
     .container { padding: 15px; flex: 1; display: flex; flex-direction: column; gap: 15px; }
-    .banner { width: 100%; border-radius: 16px; overflow: hidden; position: relative; border: 1px solid #5a264a; }
-    .banner img { width: 100%; height: 160px; object-fit: cover; display: block; }
-    .banner-text { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding: 10px; text-align: center; font-weight: bold; color: var(--text-gold); }
+    .banner { width: 100%; border-radius: 16px; overflow: hidden; position: relative; border: 1px solid #5a264a; background: #140811; }
+    .banner img { width: 100%; height: 160px; object-fit: cover; display: block; opacity: 0.8; }
+    .banner-text { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); padding: 15px 10px; text-align: center; font-weight: bold; color: var(--text-gold); font-size: 15px; }
 
     /* Service Cards */
     .card { background: var(--card-bg); border-radius: 16px; padding: 18px; border: 1px solid #4a1f3d; }
     .card-title { font-size: 18px; font-weight: bold; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
-    .card-desc { font-size: 13px; color: #d0a3c4; margin-bottom: 15px; }
+    .card-desc { font-size: 13px; color: #d0a3c4; margin-bottom: 15px; line-height: 1.4; }
     
-    .btn { background: linear-gradient(45deg, #e91e63, #ff4081); color: white; border: none; padding: 12px 20px; border-radius: 25px; font-weight: bold; width: 100%; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4); }
-    .btn:active { transform: scale(0.98); }
+    .btn { background: linear-gradient(45deg, #e91e63, #ff4081); color: white; border: none; padding: 14px 20px; border-radius: 25px; font-weight: bold; width: 100%; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4); font-size: 14px; transition: all 0.2s; }
+    .btn:active { transform: scale(0.98); opacity: 0.9; }
+    .btn:disabled { background: #4a3345; color: #8a6883; box-shadow: none; cursor: not-allowed; }
 
     /* Modals & Screens */
     .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-dark); z-index: 100; padding: 20px; display: none; flex-direction: column; overflow-y: auto; }
     .modal.active { display: flex; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .close-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #3a1930; }
+    .close-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; padding: 5px; }
 
     /* Coffee Upload Styles */
     .upload-box { border: 2px dashed var(--accent-pink); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 15px; background: rgba(255, 77, 141, 0.05); cursor: pointer; }
     .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-    .preview-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid var(--accent-pink); }
+    .preview-container-wrapper { position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--accent-pink); height: 120px; }
+    .preview-img { width: 100%; height: 100%; object-fit: cover; }
+    .remove-img-btn { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; }
 
-    /* Tarot Cards Grid */
-    .tarot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-    .tarot-card { aspect-ratio: 2/3; background: linear-gradient(135deg, #3d1b35, #1f0b1a); border: 2px solid var(--accent-pink); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 24px; transition: transform 0.3s; }
-    .tarot-card.selected { transform: translateY(-10px); border-color: var(--text-gold); box-shadow: 0 0 15px var(--text-gold); }
+    /* Tarot Cards Grid & Flip Animation */
+    .tarot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 15px; perspective: 1000px; }
+    
+    .tarot-card-scene { aspect-ratio: 2/3.3; cursor: pointer; }
+    
+    .tarot-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
+    .tarot-card-scene.flipped .tarot-card-inner { transform: rotateY(180deg); }
+    
+    .tarot-card-front, .tarot-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+    
+    /* Kartın Arkası (Kapalı Hali) */
+    .tarot-card-back { background: linear-gradient(135deg, #3d1b35, #1f0b1a); border: 2px solid var(--accent-pink); font-size: 24px; color: var(--accent-glow); }
+    .tarot-card-scene.selected .tarot-card-back { border-color: var(--text-gold); box-shadow: 0 0 12px var(--text-gold); transform: translateY(-5px); }
+    
+    /* Kartın Önü (Açılmış Hali) */
+    .tarot-card-front { background: #2d1829; border: 2px solid var(--text-gold); transform: rotateY(180deg); padding: 5px; justify-content: space-between; }
+    .tarot-card-img { width: 100%; height: 75%; object-fit: cover; border-radius: 4px; background: #140811; }
+    .tarot-card-name { font-size: 11px; font-weight: bold; color: var(--text-gold); text-align: center; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+
+    /* AI Loading Spinner */
+    .ai-loading { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px 10px; text-align: center; gap: 15px; }
+    .spinner { width: 50px; height: 50px; border: 4px solid rgba(255, 77, 141, 0.1); border-top-color: var(--accent-pink); border-radius: 50%; animation: spin 1s infinite linear; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Result Presentation Box */
+    .result-box { display: none; margin-top: 20px; background: linear-gradient(180deg, #2a1526 0%, #1f0b1a 100%); padding: 20px; border-radius: 16px; border: 1px solid var(--accent-pink); animation: fadeIn 0.5s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     /* Bottom Nav */
     .nav { position: fixed; bottom: 0; left: 0; right: 0; background: #140811; border-top: 1px solid #3d1b35; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
@@ -72,20 +98,20 @@
   <div class="container" id="main-view">
     <div class="banner">
       <img src="https://unsplash.com" alt="Mystic Banner">
-      <div class="banner-text">🔮 Mistik Enerjiler Seni Bekliyor</div>
+      <div class="banner-text">🔮 Yapay Zeka Destekli Mistik Sunum Başladı</div>
     </div>
 
     <!-- Kahve Falı Card -->
     <div class="card">
       <div class="card-title">☕ Kahve Falı</div>
-      <div class="card-desc">Fincanın 2 açısını yükle, yapay zeka enerjini hemen yorumlasın.</div>
+      <div class="card-desc">Fincan ve tabak açılarının fotoğraflarını yükleyin. Yapay zeka sembolleri tarayıp görsel sunumunu hazırlasın.</div>
       <button class="btn" onclick="openCoffeeModal()">Fotoğraf Yükle & Başla (10 ★)</button>
     </div>
 
     <!-- Tarot Card -->
     <div class="card">
       <div class="card-title">🔮 Günlük Tarot</div>
-      <div class="card-desc">Enerjine odaklan, 3 kart seç ve geleceği keşfet.</div>
+      <div class="card-desc">Enerjinizi odaklayın, 3 adet gizemli kart seçin. Kartlar ters dönerek yapay zeka yorumuyla birlikte açılacaktır.</div>
       <button class="btn" onclick="openTarotModal()">Kartları Seç & Yorumla (15 ★)</button>
     </div>
   </div>
@@ -93,98 +119,45 @@
   <!-- Coffee Upload Modal -->
   <div class="modal" id="coffee-modal">
     <div class="modal-header">
-      <h2>☕ Kahve Fotoğrafı Yükle</h2>
+      <h2>☕ Kahve Fotoğrafı Analizi</h2>
       <button class="close-btn" onclick="closeModals()">✕</button>
     </div>
-    <p style="margin-bottom: 15px; font-size: 14px; color: #ccc;">Lütfen kahve fincanınızın ve tabağınızın berrak fotoğraflarını çekip ekleyin.</p>
+    <p style="margin-bottom: 15px; font-size: 13px; color: #ccc;">Lütfen fincan için en az 1, tabak için 1 adet net fotoğraf yükleyin.</p>
     
     <div class="upload-box" onclick="document.getElementById('coffee-input').click()">
-      <div style="font-size: 30px; margin-bottom: 8px;">📷</div>
-      <div style="font-weight: bold;">Fotoğraf Seç / Çek</div>
-      <div style="font-size: 12px; color: #aaa;">En fazla 2 fotoğraf yükleyebilirsiniz</div>
+      <div style="font-size: 32px; margin-bottom: 8px;">📸</div>
+      <div style="font-weight: bold; font-size: 14px;">Fotoğraf Ekle (Maks. 2 Adet)</div>
       <input type="file" id="coffee-input" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event)">
     </div>
 
     <div class="preview-grid" id="preview-container"></div>
 
-    <button class="btn" id="analyze-btn" style="display: none;" onclick="startCoffeeReading()">Fallamayı Başlat (10 ★)</button>
-    <div id="coffee-result" style="margin-top: 20px; display: none; background: #22101e; padding: 15px; border-radius: 12px; border: 1px solid var(--accent-pink);">
-      <h3 style="color: var(--text-gold); margin-bottom: 8px;">✨ Kahve Falı Yorumun</h3>
-      <p style="font-size: 14px; line-height: 1.5;" id="coffee-text"></p>
+    <button class="btn" id="analyze-btn" style="display: none;" onclick="startCoffeeReading()">Yapay Zeka Taramasını Başlat (10 ★)</button>
+    
+    <!-- AI Loading Screen -->
+    <div class="ai-loading" id="coffee-loading">
+      <div class="spinner"></div>
+      <p style="color: var(--accent-glow); font-weight: bold;">Yapay Zeka Kahve Sembollerini Çözümlüyor...</p>
+      <p style="font-size: 12px; color: #aaa;">Görsel katmanlar ve yoğunluk haritası taranıyor.</p>
+    </div>
+
+    <!-- Final Result Presentation -->
+    <div class="result-box" id="coffee-result">
+      <h3 style="color: var(--text-gold); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">✨ Mistik Görsel Analiz Raporu</h3>
+      <p style="font-size: 14px; line-height: 1.6; color: #fce4ec;" id="coffee-text"></p>
     </div>
   </div>
 
   <!-- Tarot Selection Modal -->
   <div class="modal" id="tarot-modal">
     <div class="modal-header">
-      <h2>🔮 Tarot Kartlarını Seç</h2>
+      <h2>🔮 Mistik Tarot Sunumu</h2>
       <button class="close-btn" onclick="closeModals()">✕</button>
     </div>
-    <p id="tarot-instruction" style="margin-bottom: 10px; font-size: 14px; color: #ccc;">Enerjini odakla ve 3 kart seç (Seçilen: 0/3)</p>
+    <p id="tarot-instruction" style="margin-bottom: 10px; font-size: 13px; color: #ccc;">Kartlara odaklanın ve 3 adet seçim yapın (0/3)</p>
 
     <div class="tarot-grid" id="tarot-cards">
-      <!-- 6 cards generated dynamically -->
-    </div>
-
-    <button class="btn" id="tarot-read-btn" style="margin-top: 20px; display: none;" onclick="startTarotReading()">Seçilen Kartları Yorumla (15 ★)</button>
-
-    <div id="tarot-result" style="margin-top: 20px; display: none; background: #22101e; padding: 15px; border-radius: 12px; border: 1px solid var(--accent-pink);">
-      <h3 style="color: var(--text-gold); margin-bottom: 8px;">🔮 Tarot Falı Yorumun</h3>
-      <p style="font-size: 14px; line-height: 1.5;" id="tarot-text"></p>
-    </div>
-  </div>
-
-  <!-- Bottom Navigation -->
-  <div class="nav">
-    <div class="nav-item active" onclick="closeModals()">
-      <span>🏠</span>
-      <span>Ana Sayfa</span>
-    </div>
-    <div class="nav-item" onclick="alert('Geçmiş fallarınız yakında burada listelenecek.')">
-      <span>📜</span>
-      <span>Geçmiş</span>
-    </div>
-    <div class="nav-item" onclick="alert('Telegram Stars Satın Alma Ekranı Açılıyor...')">
-      <span>⭐</span>
-      <span>Stars Yükle</span>
-    </div>
-    <div class="nav-item" onclick="alert('Profil ayarları yakında eklenecek.')">
-      <span>👤</span>
-      <span>Profil</span>
-    </div>
-  </div>
-
-  <!-- 1. ADIM: TELEGRAM KÜTÜPHANE ÇEKİRDEK KODU (Gönderdiğiniz Orijinal Dosya) -->
-  <script>
-    (function () {
-      var eventHandlers = {};
-      var locationHash = '';
-      try { locationHash = location.hash.toString(); } catch (e) {}
-      var initParams = urlParseHashParams(locationHash);
-      var storedParams = sessionStorageGet('initParams');
-      if (storedParams) {
-        for (var key in storedParams) {
-          if (typeof initParams[key] === 'undefined') { initParams[key] = storedParams[key]; }
-        }
-      }
-      sessionStorageSet('initParams', initParams);
-      var isIframe = false, iFrameStyle;
-      try {
-        isIframe = (window.parent != null && window != window.parent);
-        if (isIframe) {
-          window.addEventListener('message', function (event) {
-            if (event.source !== window.parent) return;
-            try { var dataParsed = JSON.parse(event.data); } catch (e) { return; }
-            if (!dataParsed || !dataParsed.eventType) { return; }
-            if (dataParsed.eventType == 'set_custom_style') {
-              if (event.origin === 'https://telegram.org') { iFrameStyle.innerHTML = dataParsed.eventData; }
-            } else if (dataParsed.eventType == 'reload_iframe') {
-              try { window.parent.postMessage(JSON.stringify({eventType: 'iframe_will_reload'}), '*'); } catch (e) {}
-              location.reload();
-            } else { receiveEvent(dataParsed.eventType, dataParsed.eventData); }
-          });
-          iFrameStyle = document.createElement('style');
-          document.head.appendChild(iFrameStyle);
+      ;
           
 
         
