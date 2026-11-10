@@ -289,4 +289,48 @@
     }
   </script>
 </body>
-</html>
+</html> 
+<!-- Kahve Fotoğrafı Yükleme Modalı -->
+<div class="modal" id="coffee-modal">
+  <div class="modal-header">
+    <h2>☕ Kahve Fotoğrafı Yükle</h2>
+    <button class="close-btn" onclick="closeModals()">✕</button>
+  </div>
+  <p style="margin-bottom: 15px; font-size: 13px; color: #d0a3c4;">Fincanın ve tabağın net fotoğraflarını yükleyin.</p>
+  
+  <div class="upload-box" onclick="document.getElementById('coffee-input').click()">
+    <div style="font-size: 32px; margin-bottom: 6px;">📸</div>
+    <div style="font-weight: bold; color: #fff;">Fincan Fotoğrafı Seç / Çek</div>
+    <div style="font-size: 11px; color: #a07a95; margin-top: 4px;">En fazla 2 fotoğraf</div>
+    <input type="file" id="coffee-input" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event)">
+  </div>
+
+  <div class="preview-grid" id="preview-container"></div>
+
+  <button class="btn" id="analyze-btn" style="display: none;" onclick="startCoffeeReading()">Yapay Zeka Analizini Başlat (10 ★)</button>
+  
+  <div id="coffee-result" style="margin-top: 20px; display: none; background: #22101e; padding: 15px; border-radius: 12px; border: 1px solid var(--accent-pink);">
+    <h3 style="color: var(--text-gold); margin-bottom: 8px;">✨ AuraMist AI Yorumu</h3>
+    <p style="font-size: 14px; line-height: 1.5;" id="coffee-text"></p>
+  </div>
+</div>
+
+<!-- Görsel Tarot Kart Seçim Modalı -->
+<div class="modal" id="tarot-modal">
+  <div class="modal-header">
+    <h2>🔮 Tarot Kartlarını Seç</h2>
+    <button class="close-btn" onclick="closeModals()">✕</button>
+  </div>
+  <p id="tarot-instruction" style="margin-bottom: 12px; font-size: 13px; color: #d0a3c4; text-align: center;">Enerjine odaklan ve 3 kart seç (Seçilen: 0/3)</p>
+
+  <!-- Kartların Görsel Dizileceği Alan -->
+  <div class="tarot-grid" id="tarot-cards"></div>
+
+  <button class="btn" id="tarot-read-btn" style="margin-top: 20px; display: none;" onclick="startTarotReading()">Kartları Çevir ve Yorumla (15 ★)</button>
+
+  <div id="tarot-result" style="margin-top: 20px; display: none; background: #22101e; padding: 15px; border-radius: 12px; border: 1px solid var(--accent-pink);">
+    <h3 style="color: var(--text-gold); margin-bottom: 8px;">🔮 3 Kart Tarot Yorumu</h3>
+    <p style="font-size: 14px; line-height: 1.5;" id="tarot-text"></p>
+  </div>
+</div>
+
