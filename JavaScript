@@ -1,0 +1,119 @@
+import "dotenv/config";
+import express from "express";
+import multer from "multer";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const app = express();
+const PORT = Number(process.env.PORT) || 3000;
+const MODEL = process.env.OPENAI_MODEL || "gpt-6-astra";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+if (!process.env.OPENAI_API_KEY) {
+  console.error("OPENAI_API_KEY .env dosyasında tanımlı değil.");
+  process.exit(1);
+}
+
+const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 8 * 1024 * 1024, files: 1 },
+  fileFilter: (_req, file, callback) => {
+    if (!allowedTypes.has(file.mimetype)) {
+      return callback(new Error("Yalnızca JPG, PNG veya WEBP görsel yükleyebilirsin."));
+    }
+    callback(null, true);
+  }
+});
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.post("/api/coffee-reading", upload.single("image"), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "Lütfen fincan fotoğrafı yükle." });
+  }
+
+  const mimeType = req.file.mimetype;
+  const base64 = req.file.buffer.toString("base64");
+  const imageDataUrl = `data:${mimeType};base64,${base64}`;
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        instructions:
+          "Türkçe konuşan, nazik ve eğlenceli bir kahve falı yorumcususun. " +
+          "Fotoğrafta fincan veya telve net görünmüyorsa bunu açıkça söyle ve yeni fotoğraf iste. " +
+          "Görüntüde seçilebilen şekilleri kesin gerçeklermiş gibi sunma; olasılık dili kullan. " +
+          "Yorumu kısa başlıklarla yaz: Genel enerji, Yakın dönem, Küçük tavsiye. " +
+          "Korkutucu, kesin gelecek iddiaları veya sağlık, ölüm, hamilelik, para yatırımı gibi " +
+          "konularda kesin hükümler verme. Bunun eğlence amaçlı olduğunu belirt.",
+        input: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "input_text",
+                text: "Bu kahve fincanı fotoğrafına bakıp eğlence amaçlı, sıcak ve kişisel bir fal yorumu yap."
+              },
+              {
+                type: "input_image",
+                image_url: imageDataUrl,
+                detail: "auto"
+              }
+            ]
+          }
+        ],
+        max_output_tokens: 500
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Görsel analiz API hatası:", data);
+      return res.status(502).json({
+        error: "Fal şu anda oluşturulamadı. Biraz sonra tekrar dene."
+      });
+    }
+
+    const reading = data.output_text?.trim();
+
+    if (!reading) {
+      return res.status(502).json({
+        error: "Yorum alınamadı. Lütfen tekrar dene."
+      });
+    }
+
+    res.json({ reading });
+  } catch (error) {
+    console.error("Sunucu hatası:", error);
+    res.status(500).json({
+      error: "Sunucuda bir hata oluştu. Lütfen tekrar dene."
+    });
+  }
+});
+
+app.use((error, _req, res, _next) => {
+  if (error instanceof multer.MulterError && error.code === "LIMIT_FILE_SIZE") {
+    return res.status(413).json({ error: "Görsel en fazla 8 MB olabilir." });
+  }
+
+  if (error) {
+    return res.status(400).json({ error: error.message || "Yükleme başarısız." });
+  }
+
+  res.status(500).json({ error: "Beklenmeyen bir hata oluştu." });
+});
+
+app.listen(PORT, () => {
+  console.log(`AuraMist çalışıyor: http://localhost:${PORT}`);
+});
