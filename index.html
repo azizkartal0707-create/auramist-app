@@ -1,5 +1,4 @@
-
-            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -9,22 +8,20 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-dark: #120814;
-            --bg-glow: linear-gradient(135deg, #240a1a 0%, #120814 100%);
-            --purple-main: #9b51e0;
-            --red-main: #ff334b;
-            --red-glow: rgba(255, 51, 75, 0.4);
-            --gold-main: #ffd700;
-            --gold-text: linear-gradient(135deg, #ff334b 0%, #ff8800 100%);
-            --text-light: #ffffff;
-            --text-muted: #c2a8b0;
-            --card-bg: rgba(36, 16, 28, 0.9);
+            --bg-dark: #1f0b18;
+            --bg-glow: linear-gradient(135deg, #3d1432 0%, #1f0b18 100%);
+            --pink-main: #ff69b4;
+            --pink-light: #ffb6c1;
+            --pink-glow: rgba(255, 105, 180, 0.4);
+            --white-pure: #ffffff;
+            --text-muted: #f3d5e7;
+            --card-bg: rgba(45, 15, 38, 0.85);
         }
 
         body {
             background: var(--bg-dark);
             background-image: var(--bg-glow);
-            color: var(--text-light);
+            color: var(--white-pure);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 16px;
@@ -41,18 +38,17 @@
             background: var(--card-bg);
             padding: 12px 16px;
             border-radius: 16px;
-            border: 1px solid var(--red-glow);
+            border: 1px solid var(--pink-glow);
             backdrop-filter: blur(10px);
             margin-bottom: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 32px rgba(255, 105, 180, 0.15);
         }
 
         .brand {
             font-size: 20px;
             font-weight: 800;
-            background: var(--gold-text);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--white-pure);
+            text-shadow: 0 0 10px var(--pink-main);
             letter-spacing: 0.5px;
             cursor: pointer;
         }
@@ -64,9 +60,9 @@
         }
 
         .wallet-btn {
-            background: rgba(255, 51, 75, 0.1);
-            color: var(--red-main);
-            border: 1px solid rgba(255, 51, 75, 0.3);
+            background: rgba(255, 105, 180, 0.15);
+            color: var(--white-pure);
+            border: 1px solid var(--pink-glow);
             padding: 6px 12px;
             border-radius: 20px;
             font-weight: bold;
@@ -80,12 +76,48 @@
         .welcome-text {
             text-align: center;
             color: var(--text-muted);
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             font-size: 15px;
         }
 
         .welcome-text strong {
-            color: var(--text-light);
+            color: var(--white-pure);
+        }
+
+        /* FALCI KADIN HERO BANNER */
+        .fortune-teller-banner {
+            width: 100%;
+            height: 180px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 20px;
+            border: 1px solid var(--pink-glow);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.2);
+        }
+
+        .fortune-teller-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .banner-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(31, 11, 24, 0.95), transparent);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .banner-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--white-pure);
+            text-shadow: 0 0 8px var(--pink-main);
         }
 
         .card-container {
@@ -98,7 +130,7 @@
             background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
-            border: 1px solid rgba(255, 51, 75, 0.2);
+            border: 1px solid rgba(255, 105, 180, 0.25);
             transition: 0.3s;
             position: relative;
             overflow: hidden;
@@ -107,7 +139,7 @@
 
         .card:active {
             transform: scale(0.98);
-            border-color: var(--red-main);
+            border-color: var(--pink-main);
         }
 
         .card-header {
@@ -125,7 +157,7 @@
             font-size: 18px;
             font-weight: 700;
             margin: 0;
-            color: var(--text-light);
+            color: var(--white-pure);
         }
 
         .card-desc {
@@ -136,8 +168,8 @@
         }
 
         .card-btn {
-            background: linear-gradient(135deg, #ff334b 0%, #b30024 100%);
-            color: white;
+            background: linear-gradient(135deg, #ff69b4 0%, #d81b60 100%);
+            color: var(--white-pure);
             border: none;
             width: 100%;
             padding: 12px;
@@ -145,14 +177,14 @@
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 51, 75, 0.4);
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
         }
 
         .wallet-section {
             background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
-            border: 1px solid rgba(255, 51, 75, 0.3);
+            border: 1px solid var(--pink-glow);
             margin-top: 16px;
             display: none;
         }
@@ -162,8 +194,8 @@
         }
 
         .star-package {
-            background: rgba(255, 51, 75, 0.05);
-            border: 1px solid rgba(255, 51, 75, 0.2);
+            background: rgba(255, 105, 180, 0.08);
+            border: 1px solid rgba(255, 105, 180, 0.25);
             padding: 12px 16px;
             border-radius: 12px;
             display: flex;
@@ -174,7 +206,7 @@
         }
 
         .star-package:hover {
-            border-color: var(--red-main);
+            border-color: var(--pink-main);
         }
 
         /* CEO / ADMIN STYLES */
@@ -182,7 +214,7 @@
             background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
-            border: 1px solid var(--red-main);
+            border: 1px solid var(--pink-main);
             margin-top: 16px;
             display: none;
         }
@@ -199,17 +231,17 @@
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.08);
             padding: 12px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             text-align: center;
         }
 
         .stat-value {
             font-size: 20px;
             font-weight: bold;
-            color: var(--red-main);
+            color: var(--pink-light);
         }
 
         .stat-label {
@@ -221,8 +253,8 @@
             width: 100%;
             padding: 10px;
             border-radius: 8px;
-            border: 1px solid var(--red-glow);
-            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--pink-glow);
+            background: rgba(0,0,0,0.4);
             color: white;
             box-sizing: border-box;
             margin-bottom: 10px;
@@ -237,7 +269,7 @@
             display: flex;
             justify-content: space-around;
             padding: 12px;
-            border-top: 1px solid var(--red-glow);
+            border-top: 1px solid var(--pink-glow);
             backdrop-filter: blur(10px);
             box-sizing: border-box;
             z-index: 100;
@@ -255,7 +287,8 @@
         }
 
         .nav-item.active {
-            color: var(--red-main);
+            color: var(--pink-light);
+            font-weight: bold;
         }
 
         .nav-icon {
@@ -264,7 +297,7 @@
 
         .footer {
             text-align: center;
-            color: rgba(194, 168, 176, 0.5);
+            color: rgba(243, 213, 231, 0.5);
             font-size: 11px;
             margin-top: 30px;
             padding-bottom: 10px;
@@ -287,6 +320,14 @@
     <div id="main-view">
         <div class="welcome-text">
             Kusursuz AuraMist dünyasına hoş geldin, <strong id="welcome-user">...</strong>!
+        </div>
+
+        <!-- MİSTİK FALCI KADIN GÖRSELİ -->
+        <div class="fortune-teller-banner">
+            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop" alt="Mystic Fortune Teller">
+            <div class="banner-overlay">
+                <div class="banner-title">🔮 Mistik Enerjiler Seni Bekliyor</div>
+            </div>
         </div>
 
         <div class="card-container">
@@ -312,27 +353,28 @@
 
     <!-- STARS YÜKLEME CÜZDANI GÖRÜNÜMÜ -->
     <div id="wallet-view" class="wallet-section">
-        <h3 style="color:var(--red-main); margin-top:0;">⭐ Telegram Stars Cüzdanı</h3>
+        <h3 style="color:var(--pink-light); margin-top:0;">⭐ Telegram Stars Cüzdanı</h3>
         <p style="color:var(--text-muted); font-size:13px;">Mistik yolculuğunuza devam etmek için cüzdanınıza yıldız yükleyin.</p>
         
         <div class="star-package" onclick="buyStars(50, 50)">
             <div><strong>50 Yıldız</strong><br><small style="color:var(--text-muted);">Temel Paket</small></div>
-            <span style="color:var(--red-main); font-weight:bold;">50 ⭐</span>
+            <span style="color:var(--pink-light); font-weight:bold;">50 ⭐</span>
         </div>
         <div class="star-package" onclick="buyStars(120, 100)">
-            <div><strong>120 Yıldız</strong><br><small style="color:var(--red-main);">%20 Bonus Popüler!</small></div>
-            <span style="color:var(--red-main); font-weight:bold;">100 ⭐</span>
+            <div><strong>120 Yıldız</strong><br><small style="color:var(--pink-light);">%20 Bonus Popüler!</small></div>
+            <span style="color:var(--pink-light); font-weight:bold;">100 ⭐</span>
         </div>
         <div class="star-package" onclick="buyStars(300, 240)">
-            <div><strong>300 Yıldız</strong><br><small style="color:var(--red-main);">%25 Bonus VIP Paket</small></div>
-            <span style="color:var(--red-main); font-weight:bold;">240 ⭐</span>
+            <div><strong>300 Yıldız</strong><br><small style="color:var(--pink-light);">%25 Bonus VIP Paket</small></div>
+            <span style="color:var(--pink-light); font-weight:bold;">240 ⭐</span>
         </div>
-        <button class="card-btn" style="margin-top:10px; background:rgba(255,255,255,0.1); color:var(--text-light);" onclick="toggleWallet()">Geri Dön</button>
+        <button class="card-btn" style="margin-top:10px; background:rgba(255,255,255,0.1); color:var(--white-pure);" onclick="toggleWallet()">Geri Dön</button>
     </div>
 
     <!-- CEO / ADMIN PANEL GÖRÜNÜMÜ -->
     <div id="admin-view" class="admin-section">
-        <h3 style="color:var(--red-main); margin-top:0;">👑 CEO Yönetim Paneli</h3>
+        <h3 style="color:var(--pink-light); margin-top:0;">👑 CEO Yönetim Paneli</h3>
+        <p style="color:var(--text-muted); font-size:12px; margin-bottom:15px;">Hoş geldiniz, <strong id="admin-name">Aziz Kartal</strong></p>
         
         <div class="stat-grid">
             <div class="stat-card">
@@ -353,11 +395,11 @@
             </div>
         </div>
 
-        <h4 style="margin-bottom:8px; color:var(--red-main);">Bakiye Ekle / Düzenle</h4>
+        <h4 style="margin-bottom:8px; color:var(--pink-light);">Bakiye Ekle / Düzenle</h4>
         <input type="number" id="admin-add-stars" class="admin-input" placeholder="Eklenecek Yıldız Miktarı (ör: 100)">
         <button class="card-btn" style="margin-bottom:12px;" onclick="adminAddStars()">Bakiye Hesabıma Ekle</button>
 
-        <button class="card-btn" style="background:rgba(255,255,255,0.1); color:var(--text-light);" onclick="switchTab('home')">Paneli Kapat</button>
+        <button class="card-btn" style="background:rgba(255,255,255,0.1); color:var(--white-pure);" onclick="switchTab('home')">Paneli Kapat</button>
     </div>
 
     <div class="footer">
@@ -369,7 +411,7 @@
             <span class="nav-icon">🏠</span>
             <span>Ana Sayfa</span>
         </a>
-        <a class="nav-item" onclick="tg.showAlert('Geçmiş fallarınız yakında burada listelenecek.')">
+        <a class="nav-item" onclick="triggerHaptic(); tg.showAlert('Geçmiş fallarınız yakında burada listelenecek.')">
             <span class="nav-icon">📜</span>
             <span>Geçmiş</span>
         </a>
@@ -384,8 +426,12 @@
     </nav>
 
     <script>
+        // Telegram WebApp Initialization
         const tg = window.Telegram.WebApp;
+        tg.ready();
         tg.expand();
+        tg.setHeaderColor('#1f0b18');
+        tg.setBackgroundColor('#1f0b18');
 
         const user = tg.initDataUnsafe?.user;
 
@@ -393,17 +439,26 @@
             document.getElementById('user-name').innerText = user.first_name;
             document.getElementById('welcome-user').innerText = user.first_name;
         } else {
-            document.getElementById('user-name').innerText = "Misafir";
-            document.getElementById('welcome-user').innerText = "Gezgin";
+            document.getElementById('user-name').innerText = "Aziz Kartal";
+            document.getElementById('welcome-user').innerText = "Aziz Bey";
         }
 
         let currentBalance = 30;
         let isCeoLoggedIn = false;
-        const CEO_PIN = "0707";
+        const CEO_PIN = "Artom.0202";
 
         document.getElementById('star-balance').innerText = currentBalance;
 
+        function triggerHaptic(type = 'light') {
+            if (tg.HapticFeedback) {
+                if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
+                else if (type === 'error') tg.HapticFeedback.notificationOccurred('error');
+                else tg.HapticFeedback.impactOccurred('light');
+            }
+        }
+
         function switchTab(tab) {
+            triggerHaptic();
             const mainView = document.getElementById('main-view');
             const walletView = document.getElementById('wallet-view');
             const adminView = document.getElementById('admin-view');
@@ -431,18 +486,21 @@
         }
 
         function openCeoLogin() {
+            triggerHaptic();
             if (isCeoLoggedIn) {
                 switchTab('admin');
                 return;
             }
 
-            const pin = prompt("👑 CEO Paneli Giriş PIN Kodunu Giriniz:");
+            const pin = prompt("👑 CEO Paneli Giriş Şifresini Giriniz:");
             if (pin === CEO_PIN) {
                 isCeoLoggedIn = true;
-                tg.showAlert("Giriş Başarılı! CEO Yönetim Paneline Hoş Geldiniz Sayın Yöneticim.");
+                triggerHaptic('success');
+                tg.showAlert("Giriş Başarılı! Hoş geldiniz Sayın Aziz Kartal.");
                 switchTab('admin');
             } else if (pin !== null) {
-                tg.showAlert("Hatalı PIN Kodu! Erişim Engellendi.");
+                triggerHaptic('error');
+                tg.showAlert("Hatalı Şifre! Erişim Engellendi.");
             }
         }
 
@@ -461,8 +519,10 @@
                 currentBalance += val;
                 document.getElementById('star-balance').innerText = currentBalance;
                 document.getElementById('admin-add-stars').value = '';
+                triggerHaptic('success');
                 tg.showAlert(`Başarılı! Hesabınıza ${val} ⭐ eklendi.`);
             } else {
+                triggerHaptic('error');
                 tg.showAlert("Lütfen geçerli bir sayı girin.");
             }
         }
@@ -477,10 +537,12 @@
         }
 
         function startReading(type) {
+            triggerHaptic();
             const cost = type === 'coffee' ? 10 : 15;
             const readingName = type === 'coffee' ? 'Kahve Falı' : 'Tarot';
 
             if (currentBalance < cost) {
+                triggerHaptic('error');
                 tg.showConfirm("Yıldızınız yetersiz! Cüzdanınıza yıldız yüklemek ister misiniz?", (confirmed) => {
                     if (confirmed) switchTab('wallet');
                 });
@@ -491,16 +553,19 @@
                 if (confirmed) {
                     currentBalance -= cost;
                     document.getElementById('star-balance').innerText = currentBalance;
+                    triggerHaptic('success');
                     tg.showAlert("Talebiniz alındı! Mistik enerjileriniz analiz ediliyor...");
                 }
             });
         }
 
         function buyStars(amount, price) {
-            tg.showConfirm(`${amount} Yıldız cüzdanınıza eklensin mi? (Simülasyon Ödemesi)`, (confirmed) => {
+            triggerHaptic();
+            tg.showConfirm(`${amount} Yıldız cüzdanınıza eklensin mi? (Telegram Stars Ödeme Akışı)`, (confirmed) => {
                 if (confirmed) {
                     currentBalance += amount;
                     document.getElementById('star-balance').innerText = currentBalance;
+                    triggerHaptic('success');
                     tg.showAlert(`Tebrikler! ${amount} Yıldız cüzdanınıza başarıyla yüklendi ⭐`);
                     switchTab('home');
                 }
@@ -509,3 +574,4 @@
     </script>
 </body>
 </html>
+
